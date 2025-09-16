@@ -1,0 +1,37 @@
+id: hyperdx-panel
+
+info:
+  name: HyperDX Panel - Detect
+  author: righettod
+  severity: info
+  description: |
+    HyperDX panel was discovered.
+  reference:
+    - https://github.com/hyperdxio/hyperdx
+    - https://www.hyperdx.io/
+  metadata:
+    max-request: 1
+    verified: true
+    shodan-query: html:"hyperdx"
+  tags: panel,hyperdx,detect
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/search"
+
+    matchers:
+      - type: dsl
+        dsl:
+          - 'status_code == 200'
+          - 'contains_any(to_lower(body), ">hyperdx</span>", ">loading hyperdx<")'
+        condition: and
+
+    extractors:
+      - type: regex
+        part: body
+        group: 1
+        regex:
+
+          - '(?i)"version":"([0-9.]+)"'
+# digest: 4a0a00473045022074be38b4921aa2f90a9193c502b24471633ec9e2f88a6640ac3819b6d8d5d9f70221008e6ce9fa4ad65c544f431c54f226a3e84352c3104e12e22826f11dd476bf942b:922c64590222798bb761d5b6d8e72950
